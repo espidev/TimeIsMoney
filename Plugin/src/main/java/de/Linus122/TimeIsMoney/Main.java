@@ -397,7 +397,7 @@ public class Main extends JavaPlugin {
 				before = economy.getBalance(p);
 			}
 			
-			economy.depositPlayer(p, payout.payout_amount);
+			Bukkit.getScheduler().runTask(this, ()->economy.depositPlayer(p, payout.payout_amount));
 			log(p.getName() + ": Deposited: " + payout.payout_amount + " Balance-before: " + before + " Balance-now: " + economy.getBalance(p));
 			
 		}

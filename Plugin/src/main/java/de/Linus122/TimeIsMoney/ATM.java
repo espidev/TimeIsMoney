@@ -214,64 +214,8 @@ public class ATM implements Listener, CommandExecutor {
 			}
 		}
 	}
-	
-	@EventHandler
-	public void onMove(InventoryMoveItemEvent e) {
-		if (e.getSource() == null) return;
-		if (e.getSource().getTitle() == null) return;
-		if (e.getSource().getTitle().equals(CC(Main.finalconfig.getString("atm_title")))) {
-			e.setCancelled(true);
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	@EventHandler
-	public void onClick(InventoryClickEvent e) {
-		try {
-			if (e == null) return;
-			if (e.getInventory() == null) return;
-			if (e.getInventory().getTitle() == null) return;
-			if (e.getInventory().getTitle().equals(CC(Main.finalconfig.getString("atm_title")))) {
-				e.setResult(Result.DENY);
-				Player p = (Player) e.getWhoClicked();
-				//e.setCancelled(true);
-				if (e.getCurrentItem() != null) {
-					// left side
-					if (e.getSlot() < 4) {
-						double amount = worths[3 - e.getSlot()];
-						
-						if (ATM.bankHas(p, amount)) {
-							ATM.withdrawBank(p, amount);
-							Main.economy.depositPlayer(p, amount);
-							e.getWhoClicked().sendMessage(CC(Main.finalconfig.getString("atm_withdraw")) + " " + Main.economy.format(amount));
-						} else {
-							e.getWhoClicked().sendMessage(CC(Main.finalconfig.getString("message_atm_nomoneyinbank")));
-						}
-					} else {
-						// right side
-						if (e.getSlot() > 4) {
-							double amount = worths[3 - (3 - (e.getSlot() - 5))];
-							
-							if (Main.economy.has((Player) e.getWhoClicked(), amount)) {
-								ATM.depositBank(p, amount);
-								Main.economy.withdrawPlayer((Player) e.getWhoClicked(), amount);
-								e.getWhoClicked().sendMessage(CC(Main.finalconfig.getString("atm_deposit")) + " " + Main.economy.format(amount));
-							} else {
-								e.getWhoClicked().sendMessage(CC(Main.finalconfig.getString("message_atm_nomoney")));
-							}
-						}
-						ItemStack is = new ItemStack(Material.GOLD_NUGGET, 1);
-						ItemMeta im = is.getItemMeta();
-						im.setDisplayName(CC(Main.finalconfig.getString("atm_balance")) + " " + Main.economy.format(ATM.getBankBalance(p)));
-						is.setItemMeta(im);
-						e.getInventory().setItem(4, is);
-					}
-				}
-			}
-		} catch (Exception ignored) {
-		}
-	}
-	
+
+
 	/**
 	 * Opens the atm gui for the specified player.
 	 *
@@ -346,16 +290,6 @@ public class ATM implements Listener, CommandExecutor {
 		atm_gui.setItem(8, is);
 		
 		player.openInventory(atm_gui);
-	}
-	
-	@EventHandler
-	public void onInventoryDrag(InventoryDragEvent e) {
-		if (e == null) return;
-		if (e.getInventory() == null) return;
-		if (e.getInventory().getTitle() == null) return;
-		if (e.getInventory().getTitle().equals(CC(Main.finalconfig.getString("atm_title")))) {
-			e.setResult(Result.DENY);
-		}
 	}
 	
 	@EventHandler
